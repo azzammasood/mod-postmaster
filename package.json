@@ -1,0 +1,20 @@
+{
+  "name": "mod-postmaster",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit",
+    "dev": "devvit playtest",
+    "upload": "devvit upload",
+    "check": "npm run build"
+  },
+  "dependencies": {
+    "@devvit/public-api": "0.12.23"
+  },
+  "devDependencies": {
+    "devvit": "0.12.23",
+    "typescript": "^5.5.4"
+  },
+  "license": "BSD-3-Clause"
+}

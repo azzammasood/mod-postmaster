@@ -1,0 +1,35 @@
+{
+  "$schema": "https://developers.reddit.com/schema/config-file.v1.json",
+  "name": "mod-postmaster",
+  "permissions": {
+    "reddit": {
+      "enable": true,
+      "scope": "moderator"
+    },
+    "redis": true
+  },
+  "blocks": {
+    "entry": "src/main.ts",
+    "forms": {
+      "enable": true
+    },
+    "menu": {
+      "enable": true
+    },
+    "settings": {
+      "enable": true
+    },
+    "triggers": [
+      "onModMail"
+    ]
+  },
+  "media": {
+    "dir": "assets"
+  },
+  "marketingAssets": {
+    "icon": "assets/$devvit_icon.png"
+  },
+  "dev": {
+    "subreddit": "mod_postmaster_dev"
+  }
+}
