@@ -15,31 +15,30 @@ const PRIORITY_LABELS: Record<Priority, string> = {
 };
 
 export function formatModNote(result: ClassificationResult): string {
-  const suggestedReply = result.suggestedReply
-    .split('\n')
-    .map((line) => `> ${line}`)
-    .join('\n');
   const checklist = result.checklist
-    .map((item, index) => `${index + 1}. ${item}`)
-    .join('\n');
+    .map((item, index) => `${index + 1}) ${item}`)
+    .join('\n\n');
 
   return [
-    '**Postmaster Triage**',
+    'POSTMASTER TRIAGE',
+    '=================',
     '',
-    `- **Category:** ${CATEGORY_LABELS[result.category]}`,
+    `CATEGORY: ${CATEGORY_LABELS[result.category]}`,
     '',
-    `- **Priority:** ${PRIORITY_LABELS[result.priority]}`,
+    `PRIORITY: ${PRIORITY_LABELS[result.priority]}`,
     '',
-    `- **Reason:** ${result.reasoning}`,
+    `REASON: ${result.reasoning}`,
     '',
-    '**Suggested Reply**',
+    'SUGGESTED REPLY',
+    '---------------',
     '',
-    suggestedReply,
+    result.suggestedReply,
     '',
-    '**Moderator Checklist**',
+    'MODERATOR CHECKLIST',
+    '-------------------',
     '',
     checklist,
     '',
-    '_Moderator note only. Postmaster does not send user-visible replies._',
+    'Moderator note only. Postmaster does not send user-visible replies.',
   ].join('\n');
 }

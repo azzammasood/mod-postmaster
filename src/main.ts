@@ -155,10 +155,18 @@ Devvit.addTrigger({
   event: 'ModMail',
   async onEvent(event, context) {
     try {
-      const enabled = await getBooleanSetting(context, 'enable-internal-notes', true);
-      if (!enabled) return;
+      console.log('Postmaster: ModMail event received', summarizeModmailEvent(event));
 
-      if (isModeratorOrInternalMessage(event)) return;
+      const enabled = await getBooleanSetting(context, 'enable-internal-notes', true);
+      if (!enabled) {
+        console.log('Postmaster: internal notes disabled');
+        return;
+      }
+
+      if (isModeratorOrInternalMessage(event)) {
+        console.log('Postmaster: skipped moderator/internal Modmail event');
+        return;
+      }
 
       const conversationId = getConversationId(event);
       if (!conversationId) {
@@ -168,6 +176,10 @@ Devvit.addTrigger({
 
       let messageBody = getMessageBody(event);
       if (!messageBody) {
+        console.log('Postmaster: fetching message body from conversation', {
+          conversationId,
+          messageId: getMessageId(event),
+        });
         messageBody = await getMessageBodyFromConversation(event, context, conversationId);
       }
 
@@ -188,6 +200,11 @@ Devvit.addTrigger({
         body: note,
         isInternal: true,
         isAuthorHidden: true,
+      });
+      console.log('Postmaster: posted internal triage note', {
+        conversationId,
+        category: result.category,
+        priority: result.priority,
       });
 
       const shouldLog = await getBooleanSetting(context, 'log-classifications', true);
@@ -292,6 +309,27 @@ function isModeratorOrInternalMessage(event: unknown): boolean {
   );
 
   return authorType === 'moderator' || conversationType === 'internal';
+}
+
+function summarizeModmailEvent(event: unknown): Record<string, unknown> {
+  const eventRecord = asRecord(event);
+  return {
+    conversationId: getConversationId(event),
+    messageId: getMessageId(event),
+    authorName: getAuthorName(event),
+    messageAuthorType: firstString(
+      eventRecord.messageAuthorType,
+      asRecord(eventRecord.modmail).messageAuthorType,
+    ),
+    conversationType: firstString(
+      eventRecord.conversationType,
+      asRecord(eventRecord.modmail).conversationType,
+    ),
+    conversationState: firstString(
+      eventRecord.conversationState,
+      asRecord(eventRecord.modmail).conversationState,
+    ),
+  };
 }
 
 async function getClassifierConfig(context: Pick<Context, 'settings'>): Promise<ClassifierConfig> {
