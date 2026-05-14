@@ -199,7 +199,6 @@ Devvit.addTrigger({
         conversationId,
         body: note,
         isInternal: true,
-        isAuthorHidden: true,
       });
       console.log('Postmaster: posted internal triage note', {
         conversationId,
@@ -308,7 +307,11 @@ function isModeratorOrInternalMessage(event: unknown): boolean {
     asRecord(eventRecord.modmail).conversationType,
   );
 
-  return authorType === 'moderator' || conversationType === 'internal';
+  return (
+    authorType === 'moderator' ||
+    authorType === 'ParticipatingAs_MODERATOR' ||
+    conversationType === 'internal'
+  );
 }
 
 function summarizeModmailEvent(event: unknown): Record<string, unknown> {
