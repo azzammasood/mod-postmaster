@@ -15,20 +15,28 @@ const PRIORITY_LABELS: Record<Priority, string> = {
 };
 
 export function formatModNote(result: ClassificationResult): string {
-  const checklist = result.checklist.map((item) => `- ${item}`).join('\n');
+  const suggestedReply = result.suggestedReply
+    .split('\n')
+    .map((line) => `> ${line}`)
+    .join('\n');
+  const checklist = result.checklist
+    .map((item, index) => `${index + 1}. ${item}`)
+    .join('\n');
 
   return [
-    '## Postmaster Triage',
+    '**Postmaster Triage**',
     '',
-    `**Category:** ${CATEGORY_LABELS[result.category]}`,
-    `**Priority:** ${PRIORITY_LABELS[result.priority]}`,
-    `**Reason:** ${result.reasoning}`,
+    `- **Category:** ${CATEGORY_LABELS[result.category]}`,
     '',
-    '### Suggested Reply',
+    `- **Priority:** ${PRIORITY_LABELS[result.priority]}`,
     '',
-    result.suggestedReply,
+    `- **Reason:** ${result.reasoning}`,
     '',
-    '### Moderator Checklist',
+    '**Suggested Reply**',
+    '',
+    suggestedReply,
+    '',
+    '**Moderator Checklist**',
     '',
     checklist,
     '',
